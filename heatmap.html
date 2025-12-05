@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>GPT Usage Heatmap</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>GPT Usage Contribution</h1>
+      <select id="yearSelect"></select>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-box">
+        <span class="label">Total in Year</span>
+        <span class="value" id="yearTotal">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="label">Active Days</span>
+        <span class="value" id="activeDays">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="label">Avg (Active Days)</span>
+        <span class="value" id="avgDaily">0</span>
+      </div>
+    </div>
+
+    <div class="graph-container">
+      <div class="months-label" id="monthsLabel"></div>
+      <div class="days-label">
+        <span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span><span></span>
+      </div>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
+    </div>
+
+    <div class="legend">
+      <span>Less</span>
+      <div class="legend-item" data-level="0"></div>
+      <div class="legend-item" data-level="1"></div>
+      <div class="legend-item" data-level="2"></div>
+      <div class="legend-item" data-level="3"></div>
+      <div class="legend-item" data-level="4"></div>
+      <span>More</span>
+    </div>
+  </div>
+  <script src="heatmap.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "GPT Tracker - Usage Heatmap",
+  "version": "1.0",
+  "description": "Track ChatGPT usage stats with a GitHub-style contribution graph.",
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://chatgpt.com/*",
+        "*://chat.openai.com/*",
+        "*://*.openai.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icon.png", 
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
