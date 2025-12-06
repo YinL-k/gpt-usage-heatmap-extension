@@ -1,39 +1,77 @@
-// content.js
+
 (() => {
   let lastEnterTime = 0;
 
-  document.body.addEventListener('keydown', (e) => {
-    // 目标必须是 textarea (输入框) 或 contenteditable 元素
-    const target = e.target;
-    const isInput = target.tagName === 'TEXTAREA' || target.getAttribute('contenteditable') === 'true';
+  document.body.addEventListener(
+    "keydown",
+    (e) => {
+      const target = e.target;
+      const isInput =
+        target.tagName === "TEXTAREA" ||
+        target.getAttribute("contenteditable") === "true";
 
-    if (!isInput) return;
+      if (!isInput) return;
 
-    // 监听 Enter (keyCode 13)，排除 Shift (换行) 和 IME 输入法合成过程 (isComposing)
-    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
-      
-      // 简单的防抖：防止按住不放触发多次，或极短时间内双击
-      const now = Date.now();
-      if (now - lastEnterTime < 500) return; 
-      lastEnterTime = now;
+      if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+        const now = Date.now();
 
-      // 如果输入框为空（只有空白字符），通常不发送，不计数
-      if (!target.value && !target.innerText.trim()) return;
+        if (now - lastEnterTime < 500) return;
+        lastEnterTime = now;
 
-      recordUsage();
-    }
-  }, true); // 使用捕获模式，确保优先处理
+        const value =
+          typeof target.value === "string" ? target.value : target.innerText;
+        if (!value || !value.trim()) return;
 
-  function recordUsage() {
-    const today = new Date().toISOString().split('T')[0]; // 格式: YYYY-MM-DD
+        recordUsage(now);
+      }
+    },
+    true
+  );
+
+  function recordUsage(timestamp) {
+    const today = new Date().toISOString().split("T")[0];
 
     chrome.storage.local.get([today], (result) => {
-      const currentCount = result[today] || 0;
-      const newCount = currentCount + 1;
-      
-      chrome.storage.local.set({ [today]: newCount }, () => {
-        console.log(`[GPT Tracker] +1! Today (${today}): ${newCount}`);
+      const existing = result[today];
+      const normalized = normalizeEntry(existing);
+
+      const newEntry = {
+        count: normalized.count + 1,
+        timestamps: [...normalized.timestamps, timestamp],
+      };
+
+      chrome.storage.local.set({ [today]: newEntry }, () => {
+        console.log(
+          `[GPT Tracker] +1! Today (${today}): ${newEntry.count} (with timestamps)`
+        );
       });
     });
+  }
+
+  function normalizeEntry(raw) {
+    if (!raw) return { count: 0, timestamps: [] };
+
+    if (typeof raw === "number") {
+      return { count: raw, timestamps: [] };
+    }
+
+    if (Array.isArray(raw)) {
+      return { count: raw.length, timestamps: raw.slice() };
+    }
+
+    if (typeof raw === "object") {
+      const count =
+        typeof raw.count === "number"
+          ? raw.count
+          : Array.isArray(raw.timestamps)
+          ? raw.timestamps.length
+          : 0;
+      const timestamps = Array.isArray(raw.timestamps)
+        ? raw.timestamps.slice()
+        : [];
+      return { count, timestamps };
+    }
+
+    return { count: 0, timestamps: [] };
   }
 })();

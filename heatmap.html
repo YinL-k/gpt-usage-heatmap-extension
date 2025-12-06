@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
-
 <head>
+  <meta charset="UTF-8" />
   <title>GPT Usage Heatmap</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <div class="container">
     <div class="header">
       <h1>GPT Usage Contribution</h1>
-      <select id="yearSelect"></select>
+      <div class="header-right">
+        <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">🌙</button>
+        <button id="exportData" class="secondary-button">Export</button>
+        <button id="importData" class="secondary-button">Import</button>
+        <input type="file" id="importFileInput" accept="application/json" style="display: none" />
+        <select id="yearSelect"></select>
+      </div>
     </div>
 
     <div class="stats-bar">
@@ -25,6 +30,14 @@
       <div class="stat-box">
         <span class="label">Avg (Active Days)</span>
         <span class="value" id="avgDaily">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="label">Current Streak</span>
+        <span class="value" id="currentStreak">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="label">Longest Streak</span>
+        <span class="value" id="longestStreak">0</span>
       </div>
     </div>
 
@@ -45,8 +58,43 @@
       <div class="legend-item" data-level="4"></div>
       <span>More</span>
     </div>
+
+    <div class="trend-section">
+      <h2>Daily Activity</h2>
+      <div class="daily-chart-wrapper">
+        <canvas id="dailyChart" height="160"></canvas>
+      </div>
+
+      <div class="trend-summary">
+        <div class="summary-block">
+          <div class="summary-title">
+            Weekly totals
+            <span id="weeklyAverage" class="summary-metric"></span>
+          </div>
+          <ul id="weeklyTotals" class="summary-list"></ul>
+        </div>
+        <div class="summary-block">
+          <div class="summary-title">Monthly totals</div>
+          <ul id="monthlyTotals" class="summary-list monthly-list"></ul>
+        </div>
+        <div class="summary-block">
+          <div class="summary-title">Most active weekday</div>
+          <div id="busiestWeekday" class="summary-metric">-</div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div id="dayDetailOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <button id="modalCloseBtn" class="modal-close" aria-label="Close">&times;</button>
+      <h2 id="modalDateTitle">Date</h2>
+      <p id="modalCountText" class="modal-count"></p>
+      <div id="modalTimesSummary" class="modal-times-summary"></div>
+      <canvas id="dayTimeChart" height="140"></canvas>
+    </div>
+  </div>
+
   <script src="heatmap.js"></script>
 </body>
-
 </html>
