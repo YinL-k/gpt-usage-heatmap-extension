@@ -1,3 +1,5 @@
+[English](README_en.md) | [中文](README.md)
+
 # GPT Tracker – 使用热力图  
 监控你到底有多离不开 ChatGPT 的 Chrome 扩展
 
